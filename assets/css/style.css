@@ -1,0 +1,265 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300&family=Quicksand:wght@300&display=swap');
+
+
+
+/* root styling */
+
+:root{
+ --light:#ffffff;
+ --secondary:#8563A5;
+ --dark:#000000;
+ --primary-color: #55dbf3;
+ --secondary-color:#fd5089;
+ --border:#55dbf3;
+ --background:#8a909627;
+}
+
+body{
+    padding: 0%;
+    margin: 0%;
+}
+
+a{
+    text-decoration: none;
+}
+
+
+*>*{
+    box-sizing: border-box ;
+}
+
+
+/* global styling */
+
+.text-light{
+    color: var(--light);
+}
+
+.text-secondary{
+    color: var(--secondary);    
+}
+
+.text-dark{
+    color: var(--dark);
+}
+
+.text-primary-color{
+    color: var(--primary-color);
+
+}
+.text-secondary-color{
+    color: var(--secondary-color);
+}
+.bg-grey{
+    background-color:var(--background) ;
+}
+.bg-light{
+    background-color: var(--light);
+}
+.bg-dark{
+    background-color: var(--dark);
+}
+.container{
+    max-width: 1200px;
+    padding: 0 15px;
+    margin: auto;
+}
+
+.img-fluid{
+    width: 100%;
+}
+
+.text-title{
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bolder;
+
+}
+
+.secondary-title{
+    font-family: fantasy;
+
+}
+
+.display-1{
+    font-size: 22px;
+}
+.display-2{
+    font-size: 16px;
+}
+.display-3{
+    font-size: 14px;
+}
+.text-center{
+    text-align: center;
+}
+/* section styling */
+
+/* navigation menu */
+.navbar{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.nav-brand{
+    font-family: 'Quicksand', sans-serif;
+    font-weight: bolder;
+    text-transform: uppercase;
+    align-self: center ;
+    font-size: 32px;
+
+    background-image: linear-gradient(to right, #8563A5,#55dbf3,#fd5089);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    background-size: 300%;
+    background-position: -100%;
+
+    animation: animatedTitle 10s infinite;
+}
+
+.collapse{
+    align-self: center;
+
+}
+
+.nav-link{
+    font-size: 18px;
+    margin: 12px;
+    color: var(--dark);
+    font-family: 'Oxygen', sans-serif;
+}
+.nav-link:hover{
+    color: var(--primary-color);
+}
+.search-box{
+    display: inline;
+    border-right: 1px solid var(--secondary-color);
+    padding-right: 12px;
+    margin-right: 10px;
+}
+.toggle-button{
+    font-size: 21px;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    right: 0;
+    margin: 8px 10px;
+    display: none;
+}        
+
+.toggle-button:focus{
+    outline: none;
+}
+
+/* main menu */
+
+#site-main{
+    margin-top: 8em;
+}
+
+#posts{
+    margin-bottom: 5em;
+
+}
+.grid{
+    margin:0 auto; 
+}
+
+.grid .grid-item{
+    width: calc(25% - 20px);
+    margin-bottom: 3em ;
+}
+/* media query */
+/* this helps toggle a button if a certain amount of width is shown */
+@media (max-width:992px) {
+    .navbar{
+        flex-direction: column;
+    }
+        .collapse .nav-link{
+            display:block
+        }
+}
+
+@media (max-width:574px){
+    .toggle-button{
+    display: initial;
+    } 
+    .collapse {
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.8s cubic-bezier(0.51,-0.15, 0, 0.981);
+    }
+    .collapse .nav-link{
+        display: block;
+        text-align: center;    
+    }
+    
+    .search-box{
+        border-right: none;
+    }
+
+    .collapse-toggle{
+        max-height: 500px;
+    }
+}
+
+
+/* This is to animate the title with color gradient*/
+@keyframes animatedTitle{
+    to{
+        background-position: 100%
+    }
+}
+
+/* body CSS*/ 
+
+body {
+    color: #222222;
+    font-size: 1em;
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+
+/*footer CSS code*/
+footer{
+
+    background-color: #000033;
+    color: #ffffff;
+    text-align: center;
+}
+
+.content-footer {
+    margin: 50px 0;
+    padding: 20px 0;
+    text-align: center;
+    background-color: #73A8C2;
+    text-decoration: none;
+  }
+  .social > li {
+    display: inline-block;
+    margin: 0 5px;
+  }
+  .content-footer > p {
+    color: #F7EDE1;
+  }
+  a {
+      font-weight: bold;
+      text-decoration: none;
+      color: #F1C863;
+  }
+    
+  @media only screen and (max-width: 500px) {
+      .masthead {
+          padding: 3em 0;
+      }
+      .masthead-heading {
+          font-size: 3em;
+      }
+      .content-footer {
+          padding: 2em 2.5em;
+    }
+  }
