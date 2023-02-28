@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+        <!--using Main.js for some common header footer placement-->
+        <script type=module src=main.js></script>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Stories Blog</title>
+    <!-- font awesome icon import for icons   -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- custom style.css file -->
+    <link rel="stylesheet" href="style.css">
+    
+    <title></title> 
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script> 
+    <script>  
+    $(function(){ 
+      $("#header").load("header.html");  
+      $("#footer").load("footer.html");  
+    }); 
+    </script>  
+
+</head>
+    <!-- Header-->
+<body> <div id="header"></div> 
+    <header >
+        <h1><a href="http://www.example.com/version-history">Version History</a></h1>
+        <style>
+            h1 {
+              text-align: center;
+            }
+          </style>
+    <hr>
+    <p>This page contains information about the version history of my website.</p>
+    </header>
+                </div>
+                <div id="footer"></div> 
+    </body>
