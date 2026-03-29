@@ -1,0 +1,109 @@
+name: Fetch Strava Data
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Runs daily at 6am UTC
+  workflow_dispatch:      # Allows you to trigger it manually from GitHub
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch Strava data and write JSON
+        env:
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import json, os, urllib.request, urllib.parse
+          from datetime import datetime
+
+          # --- Step 1: Exchange refresh token for a new access token ---
+          token_data = urllib.parse.urlencode({
+              'client_id':     os.environ['STRAVA_CLIENT_ID'],
+              'client_secret': os.environ['STRAVA_CLIENT_SECRET'],
+              'refresh_token': os.environ['STRAVA_REFRESH_TOKEN'],
+              'grant_type':    'refresh_token'
+          }).encode()
+
+          req = urllib.request.Request(
+              'https://www.strava.com/oauth/token',
+              data=token_data,
+              method='POST'
+          )
+          with urllib.request.urlopen(req) as res:
+              tokens = json.loads(res.read())
+
+          access_token = tokens['access_token']
+          headers = {'Authorization': f'Bearer {access_token}'}
+
+          def get(url):
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req) as res:
+                  return json.loads(res.read())
+
+          # --- Step 2: Fetch athlete profile ---
+          athlete = get('https://www.strava.com/api/v3/athlete')
+
+          # --- Step 3: Fetch all-time stats ---
+          stats = get(f'https://www.strava.com/api/v3/athletes/{athlete["id"]}/stats')
+
+          # --- Step 4: Fetch 10 most recent activities ---
+          activities = get('https://www.strava.com/api/v3/athlete/activities?per_page=10')
+
+          # --- Step 5: Write to data/strava.json ---
+          output = {
+              'updated_at': datetime.utcnow().isoformat() + 'Z',
+              'athlete': {
+                  'firstname': athlete['firstname'],
+                  'lastname':  athlete['lastname'],
+                  'city':      athlete.get('city', ''),
+                  'state':     athlete.get('state', ''),
+                  'profile':   athlete['profile'],
+              },
+              'stats': {
+                  'all_run_totals': stats['all_run_totals'],
+                  'ytd_run_totals': stats['ytd_run_totals'],
+                  'recent_run_totals': stats['recent_run_totals'],
+                  'biggest_ride_distance': stats.get('biggest_ride_distance', 0),
+                  'biggest_climb_elevation_gain': stats.get('biggest_climb_elevation_gain', 0),
+              },
+              'activities': [
+                  {
+                      'id':               a['id'],
+                      'name':             a['name'],
+                      'type':             a['type'],
+                      'distance':         a['distance'],
+                      'moving_time':      a['moving_time'],
+                      'elapsed_time':     a['elapsed_time'],
+                      'total_elevation_gain': a['total_elevation_gain'],
+                      'start_date_local': a['start_date_local'],
+                      'average_speed':    a.get('average_speed', 0),
+                      'max_speed':        a.get('max_speed', 0),
+                      'average_heartrate': a.get('average_heartrate'),
+                      'max_heartrate':    a.get('max_heartrate'),
+                      'kudos_count':      a.get('kudos_count', 0),
+                  }
+                  for a in activities
+              ]
+          }
+
+          os.makedirs('data', exist_ok=True)
+          with open('data/strava.json', 'w') as f:
+              json.dump(output, f, indent=2)
+
+          print(f"Done — wrote {len(activities)} activities to data/strava.json")
+          EOF
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/strava.json
+          git diff --cached --quiet || git commit -m "chore: update Strava data"
+          git push
